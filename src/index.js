@@ -1,16 +1,21 @@
-/*入口js*/
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import 'antd/dist/antd.css'
-import storageUtils from './utils/storageUtils'
-import memoryUtils from './utils/memoryUtils'
-//读取local中保存user,保存到内存中
-const user = storageUtils.getUser()
-memoryUtils.user = user
+import {HashRouter,Route,Switch}from 'react-router-dom'
+import Login from './pages/login'
+import Register from './pages/register/register'
+import Main from './pages/main/main'
+import {Provider}from 'react-redux'
+import store from './redux/store'
 
-//将APP组件标签渲染到index页面的div上
 ReactDOM.render(
-  <App />,
+  <Provider store={store}>
+    <HashRouter>
+      <Switch>
+        <Route path="/login" component={Login}></Route>
+        <Route path="/register" component={Register}></Route>
+        <Route component={Main}></Route> {/*默认路由组件*/}
+      </Switch>
+    </HashRouter>
+  </Provider>,
   document.getElementById('root')
 );
