@@ -5,7 +5,7 @@ export default function HeaderSeletor(porps) {
   const [icon, setIcon] = useState(null)//图片对象，默认是没有值的
   const listHeader = !icon ? '请选择头像' :(
     <div>
-      已选择头像：<img src={icon}></img>
+      已选择头像:<img src={icon} alt=''></img>
     </div>
   )
   const headerList = []//需要显示的列表数据

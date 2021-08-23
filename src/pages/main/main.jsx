@@ -1,5 +1,5 @@
 //主界面路由租金
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import Cookies from 'js-cookie'//可以操作前端cookie的对象
@@ -14,6 +14,7 @@ import Personal from '../personal/personal'
 import NotFound from '../../components/not-found/not-found'
 import { NavBar } from 'antd-mobile'
 import NavFooter from '../../components/nav-footer'
+import Chat from '../chat/chat'
 export default function Main(props) {
     //给组件对象添加属性
     const navList = [//包含所有导航组件的相关信息数据
@@ -50,15 +51,16 @@ export default function Main(props) {
     //读取cookie中的userid
     const userid = Cookies.get('userid')
     //如果有，读取redux中的user状态
-    const user = useSelector(state => state.user)
+    const { user, unReadCount } = useSelector(state => ({
+        user: state.user,
+        unReadCount: state.chat.unReadCount
+    }))
     const dispatch = useDispatch()
-    useEffect(() => {
         //1)登录过（cookie中有userid）, 但没有登录(redux管理的user中没有_id) ，发请求获取对应的user, 暂时不做任何显示
         if (userid && !user._id) {
-            //发送异步请求，获取user
-            dispatch(getUser())
+            // 发送异步请求，获取user
+            dispatch(getUser(user))
         }
-    }, [userid, user._id, dispatch])
     //如果cookie中没有user._id，自动重定向到登录界面
     if (!userid) {
         return <Redirect to='/login' />
@@ -101,9 +103,10 @@ export default function Main(props) {
                 }
                 <Route path='/laobaninfo' component={BossInfo}></Route>
                 <Route path='/dasheninfo' component={MaintoInfo}></Route>
+                <Route path='/chat/:userid' component={Chat}></Route>
                 <Route component={NotFound}></Route>
             </Switch>
-            {currentNav ? <NavFooter navList={navList}></NavFooter> : null}
+            {currentNav ? <NavFooter navList={navList} unReadCount={unReadCount}></NavFooter> : null}
         </div>
     )
 }

@@ -12,7 +12,6 @@ export default function Personal() {
     const dispatch = useDispatch()
     const { username, header, compary, post, salary, info } = user
     const logout = () => {
-        console.log('1');
         Modal.alert('退出', '确认退出登录吗?', [
             { text: '取消' },
             {
@@ -22,12 +21,13 @@ export default function Personal() {
                     Cookies.remove('userid')
                     //干掉redux管理user
                     dispatch(resetUser())
+                    console.log(user);
                 }
             }
         ])
     }
     return (
-        <div>
+        <div style={{ marginTop: 50, marginBottom: 50 }}>
             <Result
                 img={
                     <img src={require(`../../assets/images/${header}.png`).default} style={{ width: 50 }} alt='header'></img>
