@@ -67,12 +67,10 @@ export default function Chat(props) {
     const targetId = props.match.params.userid
     const chatId = [meId, targetId].sort().join('_')
     //chatMsgs进行过滤
-    let msgs = chatMsgs.filter(msg => msg.chat_id === chatId)
-    let obj = {}
-    msgs.reduce((cur, next) => {
-        obj[next._id] ? "" : obj[next._id] = true && cur.push(next)
-        return cur
-    }, [])
+    const msgs = chatMsgs.filter(msg => msg.chat_id === chatId)
+    //对msgs重复数据进行去重
+    let res = new Map()
+    const result = msgs.filter((item) => !res.get(item._id) && res.set(item._id, 1));
     //得到目标用户的header图片对象
     const targetHeader = users[targetId].header
     const targetIcon = targetHeader ? require(`../../assets/images/${targetHeader}.png`).default : null
@@ -87,7 +85,7 @@ export default function Chat(props) {
             </NavBar>
             <List style={{ marginTop: 50, marginBottom: 50 }} >
                 {
-                    msgs.map(msg => {
+                    result.map(msg => {
 
                         if (meId === msg.to) {//对方发给我的
                             return (
