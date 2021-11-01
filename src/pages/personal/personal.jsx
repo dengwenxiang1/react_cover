@@ -21,7 +21,6 @@ export default function Personal() {
                     Cookies.remove('userid')
                     //干掉redux管理user
                     dispatch(resetUser())
-                    console.log(user);
                 }
             }
         ])
