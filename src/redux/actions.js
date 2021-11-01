@@ -33,11 +33,11 @@ export const resetUser = (msg) => ({ type: RESET_USER, data: msg })
 //接收用户列表的同步action
 const receiveUserList = (userList) => ({ type: RECEIVE_USER_LIST, data: userList })
 //接收消息列表的同步action
-const receiveMsgList = ( users, chatMsgs, userid ) => ({ type: RECEIVE_MSG_LIST, data: { users, chatMsgs, userid } })
+const receiveMsgList = (users, chatMsgs, userid) => ({ type: RECEIVE_MSG_LIST, data: { users, chatMsgs, userid } })
 //接收一个消息的同步action
-const receiveMsg = ( chatMsg, userid ) => ({ type: RECEIVE_MSG, data: { chatMsg, userid } })
+const receiveMsg = (chatMsg, userid) => ({ type: RECEIVE_MSG, data: { chatMsg, userid } })
 //读取了某个聊天消息的同步action
-const msgRead = ( count, from, to ) => ({ type: MSG_READ, data: { count, from, to } })
+const msgRead = (count, from, to) => ({ type: MSG_READ, data: { count, from, to } })
 
 
 //注册异步action
@@ -52,8 +52,7 @@ export const register = (user) => {
     //表单数据合法，返回一个发ajax请求的异步action函数
     return async dispatch => {
         //发送注册的异步请求
-        const response = await reqRegister({ username, password, type })
-        const result = response.data
+        const result = await reqRegister({ username, password, type })
         /* const promise = reqRegister(user)
          promise.then(response=>{
              const result = response.data
@@ -80,8 +79,7 @@ export const Login1 = (user) => {
     }
     return async dispatch => {
         //发送注册的异步请求
-        const response = await reqLogin(user)
-        const result = response.data
+        const result = await reqLogin(user)
         if (result.code === 0) {
             getMsgList(dispatch, result.data._id)//获取消息列表
             //成功
@@ -96,8 +94,7 @@ export const Login1 = (user) => {
 export const UdapteUser = (user) => {
     return async dispatch => {
         //
-        const response = await reqUpdateUser(user)
-        const result = response.data
+        const result = await reqUpdateUser(user)
         if (result.code === 0) {//更新成功data
             dispatch(receiveUser(result.data))
         } else {//更新失败:msg
@@ -109,8 +106,7 @@ export const UdapteUser = (user) => {
 export const getUser = () => {
     return async dispatch => {
         //执行异步ajax请求
-        const response = await reqUser()
-        const result = response.data
+        const result = await reqUser()
         if (result.code === 0) {//成功
             getMsgList(dispatch, result.data._id)//获取消息列表
             dispatch(receiveUser(result.data))
@@ -123,9 +119,8 @@ export const getUser = () => {
 export const getUserList = (type) => {
     return async dispatch => {
         //执行异步ajax请求
-        const response = await reqUserList(type)
+        const result = await reqUserList(type)
         //得到结果后，分发一个同步的action
-        const result = response.data
         if (result.code === 0) {
             dispatch(receiveUserList(result.data))
         }
@@ -145,11 +140,10 @@ export const sendMsg = ({ from, to, content }) => {
 //读取消息的异步action
 export const readMsg = (from, to) => {
     return async dispatch => {
-        const response = await reqRedMsg(from, to)
-        const result = response.data
+        const result = await reqRedMsg(from, to)
         if (result.code === 0) {
             const count = result.data
-            dispatch(msgRead(count, from, to ))
+            dispatch(msgRead(count, from, to))
         }
     }
 }
@@ -161,12 +155,11 @@ export const readMsg = (from, to) => {
 //异步获取消息列表数据
 async function getMsgList(dispatch, userid) {
     initIo(dispatch, userid)//连接服务端
-    const response = await reqChatMsg()
-    const result = response.data
+    const result = await reqChatMsg()
     if (result.code === 0) {
         const { users, chatMsgs } = result.data
         //分发同步action
-        dispatch(receiveMsgList( users, chatMsgs, userid ))
+        dispatch(receiveMsgList(users, chatMsgs, userid))
 
     }
 }
@@ -181,7 +174,7 @@ function initIo(dispatch, userid) {
     }
     //绑定监听，接收服务器发送的消息
     io.socket.on('receiveMsg', function (chatMsg) {
-       // console.log('客户端接收到服务器发送的消息', chatMsg)
+        // console.log('客户端接收到服务器发送的消息', chatMsg)
         //只有当chatMsg是与当前用户相关的消息，才去分发同步action保存消息
         if (userid === chatMsg.from || userid === chatMsg.to) {
             dispatch(receiveMsg(chatMsg, userid))
